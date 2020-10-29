@@ -1,0 +1,4 @@
+mongodb:
+  database: "fhir-dev"
+anypoint:
+  autodiscovery: "16301632"

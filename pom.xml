@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.mulesoft-fhir</groupId>
+  <artifactId>fhir-r4-us-core-patient-api</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>mule-application</packaging>
+
+  <name>fhir-r4-us-core-patient-api</name>
+
+  <parent>
+    <groupId>com.mulesoft-fhir</groupId>
+    <artifactId>fhir-bom</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.mulesoft-fhir</groupId>
+      <artifactId>fhir-resource-crud-operations</artifactId>
+      <classifier>mule-plugin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.connectors</groupId>
+      <artifactId>mule-http-connector</artifactId>
+      <classifier>mule-plugin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.connectors</groupId>
+      <artifactId>mule-sockets-connector</artifactId>
+      <classifier>mule-plugin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>17473fef-b0b5-40f2-b1a0-72bee4bed13c</groupId>
+      <artifactId>fhir-r4-us-core-patient-api</artifactId>
+      <version>1.0.0</version>
+      <classifier>raml</classifier>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.modules</groupId>
+      <artifactId>mule-apikit-module</artifactId>
+      <classifier>mule-plugin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.mulesoft.modules</groupId>
+      <artifactId>mule-secure-configuration-property-module</artifactId>
+      <classifier>mule-plugin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.mulesoft.connectors</groupId>
+      <artifactId>mule-mongodb-connector</artifactId>
+      <classifier>mule-plugin</classifier>
+    </dependency>
+  </dependencies>
+</project>

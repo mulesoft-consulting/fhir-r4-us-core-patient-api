@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<global-property doc:name="Global Property"
+		doc:id="b9e51fc1-e618-4d82-871e-3e289947fa81" name="env" value="dev" />
+	<secure-properties:config
+		name="Secure-Properties" doc:name="Secure Properties Config"
+		doc:id="983152b6-fcbf-479c-a9a6-d5e3c28e908b"
+		file="config.secure.${env}.yaml" key="${securePropertiesKey}">
+		<secure-properties:encrypt
+			algorithm="Blowfish" />
+	</secure-properties:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="86639e1f-3b6c-44ed-aac8-c34f4a961831" file="config.${env}.yaml" />
+	<mongo:config name="MongoDB_Config" doc:name="MongoDB Config" doc:id="7332ce59-558d-4b6e-a341-9d42d7bf3a57" >
+		<mongo:connection-string-connection connectionString="mongodb+srv://${secure::mongodb.username}:${secure::mongodb.password}@fhir-hkjgt.mongodb.net/${mongodb.database}?retryWrites=true&amp;w=majority" />
+	</mongo:config>
+	<global-property doc:name="Global Property" doc:id="9e27843b-8ce7-4c86-969a-4f2ba9e02faf" name="baseUrl" value="http://localhost:8081" />
+	<api-gateway:autodiscovery apiId="${anypoint.autodiscovery}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="e220d858-ea7a-4e5a-966c-9990e7d7a4d8" flowRef="fhir-r4-us-core-patient-api-main" />
+	<import doc:name="Import" doc:id="a510addb-7d36-4e58-8914-ef246ad2a1de" file="fhir-resource-crud-operations.xml" />
+	<global-property doc:name="Global Property" doc:id="e38b2a29-ca74-4a10-ae83-c32ae5c6e00b" name="fhirResourceName" value="Patient" />
+	<global-property doc:name="Global Property" doc:id="7c788d10-f2e2-4665-bd22-da16faea6291" name="fhirCollectionName" value="us-core-patients" />
+</mule>

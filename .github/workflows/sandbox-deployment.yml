@@ -1,0 +1,86 @@
+name: Sandbox - Build and Deploy
+
+on:
+  push:
+    branches: [ sandbox ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - run: echo ::set-env name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
+
+    - name: Check out common CI/CD assets
+      uses: actions/checkout@v2
+      with:
+        repository: mulesoft-fhir/fhir-cicd-common
+        path: fhir-cicd-common
+        token: ${{ secrets.GIT_TOKEN }}
+        ref: master
+        
+    - name: Check out parent pom
+      uses: actions/checkout@v2
+      with:
+        repository: mulesoft-fhir/fhir-parent-pom
+        path: fhir-parent-pom
+        token: ${{ secrets.GIT_TOKEN }}
+        ref: master
+        
+    - name: Install parent pom into local maven
+      run: cd fhir-parent-pom && mvn -B clean install
+        
+    - name: Check out crud plugin
+      uses: actions/checkout@v2
+      with:
+        repository: mulesoft-fhir/fhir-resource-crud-operations
+        path: fhir-resource-crud-operations
+        token: ${{ secrets.GIT_TOKEN }}
+        
+    - name: Install crud plugin into local maven
+      run: cd fhir-resource-crud-operations && mvn -B clean install -s ../fhir-cicd-common/settings.xml
+      env:
+        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        PLATFORM_CLIENT_ID: ${{ secrets.SANDBOX_PLATFORM_CLIENT_ID }}
+        PLATFORM_CLIENT_SECRET: ${{ secrets.SANDBOX_PLATFORM_CLIENT_SECRET }}
+        PLATFORM_ENV: Sandbox
+        SETTINGS_ENV: dev
+        PLATFORM_USERNAME: ${{ secrets.PLATFORM_USERNAME }}
+        PLATFORM_PASSWORD: ${{ secrets.PLATFORM_PASSWORD }}
+        SECURE_PROPERTIES_KEY: ${{ secrets.SECURE_PROPERTIES_KEY }}
+        APP_NAME: ${REPOSITORY_NAME}-sandbox
+        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      
+    - uses: actions/checkout@v2
+      with:
+        path: main
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Build artifact
+      run: cd main && mvn -B clean deploy -DmuleDeploy -e -s ../fhir-cicd-common/settings.xml
+      env:
+        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        PLATFORM_CLIENT_ID: ${{ secrets.SANDBOX_PLATFORM_CLIENT_ID }}
+        PLATFORM_CLIENT_SECRET: ${{ secrets.SANDBOX_PLATFORM_CLIENT_SECRET }}
+        PLATFORM_ENV: Sandbox
+        SETTINGS_ENV: dev
+        PLATFORM_USERNAME: ${{ secrets.PLATFORM_USERNAME }}
+        PLATFORM_PASSWORD: ${{ secrets.PLATFORM_PASSWORD }}
+        SECURE_PROPERTIES_KEY: ${{ secrets.SECURE_PROPERTIES_KEY }}
+        APP_NAME: ${REPOSITORY_NAME}-sandbox
+        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: mule-artifact
+        path: main/target/*.jar
