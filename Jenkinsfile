@@ -12,17 +12,30 @@ pipeline {
   }
   stages {
     stage('Prepare') {
-      dir('parent-pom') {
-        git url: https://github.com/mulesoft-fhir/fhir-parent-pom
-        mvn install
-      }
-      dir('curd-plugin') {
-        gir url: https://github.com/mulesoft-fhir/fhir-resource-crud-operations
+       checkout([  
+            $class: 'GitSCM', 
+            branches: [[name: 'refs/heads/master']], 
+            doGenerateSubmoduleConfigurations: false, 
+            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'fhir-parent-pom']], 
+            submoduleCfg: [], 
+            userRemoteConfigs: [[url: 'https://github.com/mulesoft-fhir/fhir-parent-pom']]
+        ])
+        checkout([  
+            $class: 'GitSCM', 
+            branches: [[name: 'refs/heads/master']], 
+            doGenerateSubmoduleConfigurations: false, 
+            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'fhir-resource-crud-operations']], 
+            submoduleCfg: [], 
+            userRemoteConfigs: [[url: 'https://github.com/mulesoft-fhir/fhir-resource-crud-operations']]
+        ])
         withMaven(
           mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
-            sh 'mvn install'
+            sh 'cd fhir-parent-pom && mvn install'
           }
-      }
+        withMaven(
+          mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
+            sh 'cd fhir-resource-crud-operations && mvn install'
+          }
     }
     stage('Build') {
       steps {
