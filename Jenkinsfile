@@ -12,7 +12,8 @@ pipeline {
   }
   stages {
     stage('Prepare') {
-       checkout([  
+       steps {
+         checkout([  
             $class: 'GitSCM', 
             branches: [[name: 'refs/heads/master']], 
             doGenerateSubmoduleConfigurations: false, 
@@ -36,6 +37,7 @@ pipeline {
           mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
             sh 'cd fhir-resource-crud-operations && mvn install'
           }
+       }
     }
     stage('Build') {
       steps {
