@@ -59,12 +59,12 @@ pipeline {
 
     stage('Deploy Development') {
       when {
-        branch 'jenkins-setup'
+        branch 'dev'
       }
       environment {
         PLATFORM_ENV = 'Development'
         SETTINGS_ENV = 'dev'
-        APP_NAME = 'sandbox-1hls-fhir-r4-patient-api-v1'
+        APP_NAME = 'dev-1hls-fhir-r4-patient-api-v1'
         PLATFORM_CLIENT_ID = credentials('SANDBOX_PLATFORM_CLIENT_ID')
         PLATFORM_CLIENT_SECRET = credentials('SANDBOX_PLATFORM_CLIENT_SECRET')
       }
@@ -76,20 +76,22 @@ pipeline {
       }
     }
     stage('Deploy Production') {
-        when {
-          branch 'master'
-        }
-        environment {
-          ENVIRONMENT = 'Production'
-          ANYPOINT_ENV = credentials('PRD_ANYPOINT_SALES')
-          APP_NAME = 'nto-customer-api-v1'
-        }
-        steps {
-          withMaven(
-            mavenSettingsConfig: 'certified-mvn-settings.xml'){
-              sh 'mvn -V -B -DskipTests deploy -DmuleDeploy -Dmule.version=$MULE_VERSION -Danypoint.username=$DEPLOY_CREDS_USR -Danypoint.password=$DEPLOY_CREDS_PSW -Dcloudhub.app=$APP_NAME -Dcloudhub.environment=$ENVIRONMENT -Denv.ANYPOINT_CLIENT_ID=$ANYPOINT_ENV_USR -Denv.ANYPOINT_CLIENT_SECRET=$ANYPOINT_ENV_PSW -Dcloudhub.bg=$BG -Dcloudhub.worker=$WORKER -Dapp.client_id=$APP_CLIENT_CREDS_USR -Dapp.client_secret=$APP_CLIENT_CREDS_PSW'
-            }
-        }
+      when {
+        branch 'master'
+      }
+      environment {
+        PLATFORM_ENV = 'Production'
+        SETTINGS_ENV = 'prod'
+        APP_NAME = '1hls-fhir-r4-patient-api-v1'
+        PLATFORM_CLIENT_ID = credentials('PRODUCTION_PLATFORM_CLIENT_ID')
+        PLATFORM_CLIENT_SECRET = credentials('PRODUCTION_PLATFORM_CLIENT_SECRET')
+      }
+      steps {
+        withMaven(
+          mavenSettingsConfig: 'certified-mvn-settings.xml'){
+            sh 'mvn -B deploy -e -DmuleDeploy -DskipTests'
+          }
+      }
     }
   }
 
