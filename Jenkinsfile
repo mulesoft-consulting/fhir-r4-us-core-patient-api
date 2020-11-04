@@ -30,11 +30,11 @@ pipeline {
             userRemoteConfigs: [[url: 'https://github.com/mulesoft-fhir/fhir-resource-crud-operations']]
         ])
         withMaven(
-          mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
+          mavenSettingsConfig: 'certified-mvn-settings.xml'){
             sh 'cd fhir-parent-pom && mvn install'
           }
         withMaven(
-          mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
+          mavenSettingsConfig: 'certified-mvn-settings.xml'){
             sh 'cd fhir-resource-crud-operations && mvn install'
           }
        }
@@ -42,7 +42,7 @@ pipeline {
     stage('Build') {
       steps {
         withMaven(
-          mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
+          mavenSettingsConfig: 'certified-mvn-settings.xml'){
             sh 'mvn clean -DskipTests package'
           }
       }
@@ -51,7 +51,7 @@ pipeline {
     stage('Test') {
       steps {
         withMaven(
-          mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
+          mavenSettingsConfig: 'certified-mvn-settings.xml'){
             sh "mvn -B test"
         }
       }
@@ -71,8 +71,8 @@ pipeline {
       }
       steps {
         withMaven(
-          mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
-            sh 'mvn deploy -e -DmuleDeploy'
+          mavenSettingsConfig: 'certified-mvn-settings.xml'){
+            sh 'mvn deploy -e -DmuleDeploy -DskipTests'
           }
       }
     }
@@ -87,7 +87,7 @@ pipeline {
         }
         steps {
           withMaven(
-            mavenSettingsConfig: 'f007350a-b1d5-44a8-9757-07c22cd2a360'){
+            mavenSettingsConfig: 'certified-mvn-settings.xml'){
               sh 'mvn -V -B -DskipTests deploy -DmuleDeploy -Dmule.version=$MULE_VERSION -Danypoint.username=$DEPLOY_CREDS_USR -Danypoint.password=$DEPLOY_CREDS_PSW -Dcloudhub.app=$APP_NAME -Dcloudhub.environment=$ENVIRONMENT -Denv.ANYPOINT_CLIENT_ID=$ANYPOINT_ENV_USR -Denv.ANYPOINT_CLIENT_SECRET=$ANYPOINT_ENV_PSW -Dcloudhub.bg=$BG -Dcloudhub.worker=$WORKER -Dapp.client_id=$APP_CLIENT_CREDS_USR -Dapp.client_secret=$APP_CLIENT_CREDS_PSW'
             }
         }
