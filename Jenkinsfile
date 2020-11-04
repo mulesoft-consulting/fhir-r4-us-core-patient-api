@@ -7,8 +7,8 @@ pipeline {
     MULE_VERSION = '4.3.0'
     BG = "1Platform\\1HLS\\Payer"
     SECURE_PROPERTIES_KEY = credentials('fhir-payer-encryption-key')
-    PLATFORM_USERNAME = DEPLOY_CREDS_USR
-    PLATFORM_PASSWORD = DEPLOY_CREDS_PSW
+    PLATFORM_USERNAME = '${DEPLOY_CREDS_USR}'
+    PLATFORM_PASSWORD = '${DEPLOY_CREDS_PSW}'
   }
   stages {
     stage('Prepare') {
