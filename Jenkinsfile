@@ -43,7 +43,7 @@ pipeline {
       steps {
         withMaven(
           mavenSettingsConfig: 'certified-mvn-settings.xml'){
-            sh 'mvn clean -DskipTests package'
+            sh 'mvn -B clean -DskipTests package'
           }
       }
     }
@@ -71,7 +71,7 @@ pipeline {
       steps {
         withMaven(
           mavenSettingsConfig: 'certified-mvn-settings.xml'){
-            sh 'mvn deploy -e -DmuleDeploy -DskipTests'
+            sh 'mvn -B deploy -e -DmuleDeploy -DskipTests'
           }
       }
     }
