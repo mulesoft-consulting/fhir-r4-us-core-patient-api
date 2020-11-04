@@ -64,7 +64,6 @@ pipeline {
       environment {
         PLATFORM_ENV = 'Development'
         SETTINGS_ENV = 'dev'
-        ANYPOINT_ENV = credentials('DEV_ANYPOINT_SALES')
         APP_NAME = 'sandbox-1hls-fhir-r4-patient-api-v1'
         PLATFORM_CLIENT_ID = credentials('SANDBOX_PLATFORM_CLIENT_ID')
         PLATFORM_CLIENT_SECRET = credentials('SANDBOX_PLATFORM_CLIENT_SECRET')
