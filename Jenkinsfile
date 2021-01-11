@@ -19,7 +19,7 @@ pipeline {
             doGenerateSubmoduleConfigurations: false, 
             extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'fhir-parent-pom']], 
             submoduleCfg: [], 
-            userRemoteConfigs: [[url: 'https://github.com/mulesoft-fhir/fhir-parent-pom']]
+            userRemoteConfigs: [[url: 'https://github.com/mulesoft-consulting/fhir-parent-pom']]
         ])
         checkout([  
             $class: 'GitSCM', 
@@ -27,7 +27,7 @@ pipeline {
             doGenerateSubmoduleConfigurations: false, 
             extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'fhir-resource-crud-operations']], 
             submoduleCfg: [], 
-            userRemoteConfigs: [[url: 'https://github.com/mulesoft-fhir/fhir-resource-crud-operations']]
+            userRemoteConfigs: [[url: 'https://github.com/mulesoft-consulting/fhir-resource-crud-operations']]
         ])
         withMaven(
           mavenSettingsConfig: 'certified-mvn-settings.xml'){
